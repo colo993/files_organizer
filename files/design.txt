@@ -1,0 +1,8 @@
+App moves or copy the files from source to destination folder. 
+You can choose if you want use file_names, date creation, extention type to move/copy file.
+You can choose different rules for different destination folders etc.
+You can choose option to rename the moved/copied files.
+
+next features:
+- change extension of a file
+- make zip or gz archive for all selected files
