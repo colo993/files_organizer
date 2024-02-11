@@ -44,8 +44,8 @@ class File:
         elif option == 'union':
             return list(set.union(*map(set,filtered_list)))     
 
-    def copy(self) -> None:
-        for file in self._get_list_of_files():
+    def copy(self, list_of_files) -> None:
+        for file in list_of_files:
             try:
                 shutil.copy(f"{self.source_path}/{file}", f"{self.destination_path}/{file}")
             except IOError as error:
@@ -53,8 +53,8 @@ class File:
                 os.makedirs(os.path.dirname(self.destination_path))
                 shutil.copy(f"{self.source_path}/{file}", f"{self.destination_path}/{file}")
 
-    def move(self) -> None:
-        for file in self.get_list_of_files():
+    def move(self, list_of_files) -> None:
+        for file in list_of_files:
             try:
                 shutil.move(f"{self.source_path}/{file}", f"{self.destination_path}/{file}")
             except IOError as error:
@@ -65,15 +65,18 @@ class File:
 
 if __name__ == "__main__":
     file = File('/home/colo/files_organizer/sandbox', '/home/colo/files_organizer/files_test/')
-    print(file._get_list_of_files('union',
-                                  file._filter_by_extension('png'),
-                                  file._filter_by_name('test'),
-                                  file._filter_by_date_creation(datetime(2024, 2, 4, 00, 00, 00), 
-                                                          datetime(2024, 2, 8, 12, 00, 00))))
+    list_of_files = file._get_list_of_files(option='union',
+                                  extensions=file._filter_by_extension('png'),
+                                  names=file._filter_by_name('test'),
+                                  dates=file._filter_by_date_creation(datetime(2024, 2, 4, 00, 00, 00), 
+                                                          datetime(2024, 2, 8, 12, 00, 00)))
+    file.copy(list_of_files)
     
-    print(file._get_list_of_files('intersection',
-                                  file._filter_by_extension('png'),
-                                  file._filter_by_name('test'),
-                                  file._filter_by_date_creation(datetime(2024, 2, 4, 00, 00, 00), 
-                                                          datetime(2024, 2, 8, 12, 00, 00))))
+    file2 = File('/home/colo/files_organizer/sandbox', '/home/colo/files_organizer/files_test2/')
+    list_of_files2 = file2._get_list_of_files(option='intersection',
+                                  extensions=file2._filter_by_extension('png'),
+                                  names=file2._filter_by_name('test'),
+                                  dates=file2._filter_by_date_creation(datetime(2024, 2, 4, 00, 00, 00), 
+                                                          datetime(2024, 2, 8, 12, 00, 00)))
+    file2.copy(list_of_files2)
     
