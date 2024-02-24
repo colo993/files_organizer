@@ -1,5 +1,5 @@
 {
-    "jpg" : ".jp*",
-    "png" : ".png",
-    "txt" : ".txt"
+    "jpg" : "jp(.*)",
+    "png" : "png",
+    "bmp" : "bmp"
 }

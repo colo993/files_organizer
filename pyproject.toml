@@ -8,5 +8,10 @@ version = "0.0.1"
 # For local testing it is enough 
 # When publishing the package add more content
 
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
+
 [project.urls]
 Homepage = "https://github.com/colo993/files_organizer"

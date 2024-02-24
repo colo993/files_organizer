@@ -15,7 +15,7 @@ class File:
         for file in self.list_of_files:
             try:
                 shutil.copy(f"{self.source_path}/{file}", f"{self.destination_path}/{file}")
-            except IOError as error:
+            except IOError:
                 os.umask(0)
                 os.makedirs(os.path.dirname(f"{self.destination_path}/{file}"), exist_ok=True)
                 shutil.copy(f"{self.source_path}/{file}", f"{self.destination_path}/{file}")
@@ -25,7 +25,7 @@ class File:
         for file in self.list_of_files:
             try:
                 shutil.move(f"{self.source_path}/{file}", f"{self.destination_path}/{file}")
-            except IOError as error:
+            except IOError:
                 os.umask(0)
                 os.makedirs(os.path.dirname(f"{self.destination_path}/{file}"), exist_ok=True)       
                 shutil.move(f"{self.source_path}/{file}", f"{self.destination_path}/{file}")   

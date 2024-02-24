@@ -15,10 +15,9 @@ class FilesList:
         self.source_path = source_path
     
     def filter_by_extension(self, type_of_extension) -> list: 
-        """Select extension of a file"""
-            
+        """Select extension of a file"""   
         return [file for file in os.listdir(path=self.source_path) if 
-                re.search(get_extensions_data()[type_of_extension], file.lower())]
+                re.search(f"{get_extensions_data()[type_of_extension]}$", file.lower())]
     
     def filter_by_name(self, file_name_to_search) -> list:
         """Find the files which matches the given word"""
