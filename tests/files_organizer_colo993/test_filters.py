@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 import pytest
 
 from files_organizer_colo993 import filters
-from files_organizer_colo993 import action
 
 # Mock extensions data for testing
 def get_extensions_data():
@@ -81,8 +80,7 @@ class TestFilesList:
         dates = files_list_instance.filter_by_date_creation(
                                                     datetime.fromtimestamp(3), 
                                                     datetime.fromtimestamp(4))
-        result = files_list_instance.get('union', extension, names, dates)
-        result.sort()
+        result = sorted(files_list_instance.get('union', extension, names, dates))
         assert result == ['ExtEnded_file2.jpg', 'ExtEnded_file4.png', 
                           'ExtEnded_file6.bmp', 'basic_file3.png']
         
