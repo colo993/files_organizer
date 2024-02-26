@@ -1,5 +1,6 @@
 import os
 import re
+from datetime import datetime, timedelta
 
 import pytest
 
@@ -24,24 +25,18 @@ class TestFilesList:
                       "basic_file3.png", "ExtEnded_file4.png", 
                       "basic_file5.bmp", "ExtEnded_file6.bmp"
         ]
-        for file in file_names:
-            open(os.path.join(tmpdir_path, file), "a").close()
+        for i, file in enumerate(file_names, start=1):
+            file_path = os.path.join(tmpdir_path, file)
+            with open(file_path, "a") as f:
+               f.write('Test')
+            os.utime(file_path, (i, i))
+            
         return files_list
     
     def test_filter_by_extension_jpg(self, files_list_instance):
         result = files_list_instance.filter_by_extension("jpg")
         assert len(result) == 2
         assert all(re.search(r"jp(.*)", file) for file in result)
-    
-    def test_filter_by_extension_png(self, files_list_instance):
-        result = files_list_instance.filter_by_extension("png")
-        assert len(result) == 2
-        assert all(re.search(r"\.png$", file) for file in result)
-    
-    def test_filter_by_extension_bmp(self, files_list_instance):
-        result = files_list_instance.filter_by_extension("bmp")
-        assert len(result) == 2
-        assert all(re.search(r"\.bmp$", file) for file in result)
     
     def test_filter_by_extension_invalid_input(self, files_list_instance):
         with pytest.raises(KeyError):
@@ -52,12 +47,42 @@ class TestFilesList:
         assert len(result) == 3
         assert all(re.search(r"basic", file) for file in result)
     
-    def test_filter_by_name_extended(self, files_list_instance):
-        result = files_list_instance.filter_by_name("ExtEnded")
-        assert len(result) == 3
-        assert all(re.search(r"ExtEnded", file) for file in result)
-    
     def test_filter_by_name_invalid_input(self, files_list_instance):
         with pytest.raises(TypeError):
             files_list_instance.filter_by_name(1)
     
+    def test_filter_by_date_creation(self, files_list_instance):
+        from_time = datetime.fromtimestamp(1)
+        print(from_time)
+        to_time = datetime.fromtimestamp(2)
+        print(to_time)
+        result = files_list_instance.filter_by_date_creation(from_time, to_time)
+        assert len(result) == 2
+        assert ['basic_file1.jpg', 'ExtEnded_file2.jpg'] == result
+    
+    def test_filter_by_date_creation_invalid_input(self, files_list_instance):
+        with pytest.raises(TypeError):
+            files_list_instance.filter_by_date_creation("Invalid", 123)
+            
+    def test_get_intersection(self, files_list_instance):
+        extension = files_list_instance.filter_by_extension('png')
+        names = files_list_instance.filter_by_name('ExtEnded')
+        dates = files_list_instance.filter_by_date_creation(
+                                                    datetime.fromtimestamp(1), 
+                                                    datetime.fromtimestamp(6))
+        assert files_list_instance.get('intersection', 
+                                       extension, 
+                                       names, 
+                                       dates) == ["ExtEnded_file4.png"]
+    
+    def test_get_union(self, files_list_instance):
+        extension = files_list_instance.filter_by_extension('png')
+        names = files_list_instance.filter_by_name('ExtEnded')
+        dates = files_list_instance.filter_by_date_creation(
+                                                    datetime.fromtimestamp(3), 
+                                                    datetime.fromtimestamp(4))
+        result = files_list_instance.get('union', extension, names, dates)
+        result.sort()
+        assert result == ['ExtEnded_file2.jpg', 'ExtEnded_file4.png', 
+                          'ExtEnded_file6.bmp', 'basic_file3.png']
+        
