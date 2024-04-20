@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "files_organizer_colo993"
+version = "0.0.1"
+# For local testing it is enough 
+# When publishing the package add more content
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
+
+[project.urls]
+Homepage = "https://github.com/colo993/files_organizer"
