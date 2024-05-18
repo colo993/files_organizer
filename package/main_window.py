@@ -14,7 +14,9 @@ from PyQt6.QtWidgets import (
     QToolBar,
     QStatusBar,
     QLabel,
-    QFileDialog
+    QFileDialog,
+    QCheckBox,
+    QComboBox
 )
 
 from package.about_window import AboutWindow
@@ -60,8 +62,10 @@ class FilesOrganizerWindow(QMainWindow):
         help_menu.addAction(about_button)
     
     def _createWidgets(self):
-        widget = QWidget()
-        layout = QVBoxLayout()
+        self.widget = QWidget()
+        main_layout = QVBoxLayout()
+        self.checkbox_layout_name = QVBoxLayout() 
+        self.checkbox_layout_extension = QVBoxLayout() 
         
         button_source_dir = QPushButton("Select source directory")
         button_destination_dir = QPushButton("Select destination directory")
@@ -69,17 +73,28 @@ class FilesOrganizerWindow(QMainWindow):
         button_destination_dir.clicked.connect(self.destination_directory)
         
         self.label_source_dir = QLabel()
-        #label_source_dir.setText(x)
         self.label_destination_dir = QLabel()
-        #label_destination_dir.setText()
         
-        layout.addWidget(button_source_dir)
-        layout.addWidget(self.label_source_dir)
-        layout.addWidget(button_destination_dir)
-        layout.addWidget(self.label_destination_dir)
+        self.filter_by_name_checkbox = QCheckBox("Filter by name", self)
+        self.filter_by_name_checkbox.toggled.connect(self.filter_by_name)
+        self.filter_by_extension_checkbox = QCheckBox("Filter by extension", self)
+        self.filter_by_extension_checkbox.toggled.connect(self.filter_by_extension)
         
-        widget.setLayout(layout)
-        self.setCentralWidget(widget)
+        main_layout.addWidget(button_source_dir)
+        main_layout.addWidget(self.label_source_dir)
+        main_layout.addWidget(button_destination_dir)
+        main_layout.addWidget(self.label_destination_dir)
+        
+        main_layout.addLayout(self.checkbox_layout_name)
+        self.checkbox_layout_name.addWidget(self.filter_by_name_checkbox)
+        
+        main_layout.addLayout(self.checkbox_layout_extension)
+        self.checkbox_layout_extension.addWidget(self.filter_by_extension_checkbox)
+        
+        main_layout.addStretch()
+        main_layout.setContentsMargins(10, 10, 20, 30)
+        self.widget.setLayout(main_layout)
+        self.setCentralWidget(self.widget)
         
     def source_directory(self):
         source_directory = QFileDialog.getExistingDirectory(self, "Source directory",
@@ -88,10 +103,29 @@ class FilesOrganizerWindow(QMainWindow):
             self.label_source_dir.setText(source_directory)
     
     def destination_directory(self):
-        destination_directory = QFileDialog.getExistingDirectory(self, "Source directory",
+        destination_directory = QFileDialog.getExistingDirectory(self, "Destination directory",
                                              self.label_destination_dir.text())
         if destination_directory:
             self.label_destination_dir.setText(destination_directory)
+    
+    def filter_by_name(self):
+        if self.filter_by_name_checkbox.isChecked():
+            self.filter_by_name = QLineEdit()
+            self.checkbox_layout_name.addWidget(self.filter_by_name)
+        else:
+            i = self.checkbox_layout_name.indexOf(self.filter_by_name)
+            self.checkbox_layout_name.takeAt(i)
+            self.filter_by_name.deleteLater()
+    
+    def filter_by_extension(self):
+        if self.filter_by_extension_checkbox.isChecked():
+            self.filter_by_extension = QComboBox()
+            self.filter_by_extension.addItems(["A", "B", "C"])
+            self.checkbox_layout_extension.addWidget(self.filter_by_extension)
+        else:
+            i = self.checkbox_layout_extension.indexOf(self.filter_by_extension)
+            self.checkbox_layout_extension.takeAt(i)
+            self.filter_by_extension.deleteLater()
         
     def _mainWindow(self):
         print("newWindow")
