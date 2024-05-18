@@ -1,5 +1,6 @@
 import sys
 
+from datetime import datetime
 from PyQt6.QtCore import Qt, QPoint
 from PyQt6.QtGui import QAction, QIcon, QGuiApplication
 from PyQt6.QtWidgets import (
@@ -16,7 +17,9 @@ from PyQt6.QtWidgets import (
     QLabel,
     QFileDialog,
     QCheckBox,
-    QComboBox
+    QComboBox,
+    QDateTimeEdit,
+    QCalendarWidget
 )
 
 from package.about_window import AboutWindow
@@ -33,7 +36,7 @@ class FilesOrganizerWindow(QMainWindow):
     
     def _initUI(self):
         self.setWindowTitle("Files Organizer")
-        self.setGeometry(300, 300, 300, 300)
+        self.setGeometry(800, 800, 500, 600)
         
     def _createMenu(self):
         toolbar = QToolBar("My main toolbar.")
@@ -66,6 +69,7 @@ class FilesOrganizerWindow(QMainWindow):
         main_layout = QVBoxLayout()
         self.checkbox_layout_name = QVBoxLayout() 
         self.checkbox_layout_extension = QVBoxLayout() 
+        self.checkbox_layout_date = QVBoxLayout()
         
         button_source_dir = QPushButton("Select source directory")
         button_destination_dir = QPushButton("Select destination directory")
@@ -79,6 +83,8 @@ class FilesOrganizerWindow(QMainWindow):
         self.filter_by_name_checkbox.toggled.connect(self.filter_by_name)
         self.filter_by_extension_checkbox = QCheckBox("Filter by extension", self)
         self.filter_by_extension_checkbox.toggled.connect(self.filter_by_extension)
+        self.filter_by_date_checkbox = QCheckBox("Filter by date range", self)
+        self.filter_by_date_checkbox.toggled.connect(self.filter_by_date)
         
         main_layout.addWidget(button_source_dir)
         main_layout.addWidget(self.label_source_dir)
@@ -91,20 +97,27 @@ class FilesOrganizerWindow(QMainWindow):
         main_layout.addLayout(self.checkbox_layout_extension)
         self.checkbox_layout_extension.addWidget(self.filter_by_extension_checkbox)
         
+        main_layout.addLayout(self.checkbox_layout_date)
+        self.checkbox_layout_date.addWidget(self.filter_by_date_checkbox)
+        
         main_layout.addStretch()
         main_layout.setContentsMargins(10, 10, 20, 30)
         self.widget.setLayout(main_layout)
         self.setCentralWidget(self.widget)
         
     def source_directory(self):
-        source_directory = QFileDialog.getExistingDirectory(self, "Source directory",
-                                             self.label_source_dir.text())
+        source_directory = QFileDialog.getExistingDirectory(
+                                            self, 
+                                            "Source directory",
+                                            self.label_source_dir.text())
         if source_directory:
             self.label_source_dir.setText(source_directory)
     
     def destination_directory(self):
-        destination_directory = QFileDialog.getExistingDirectory(self, "Destination directory",
-                                             self.label_destination_dir.text())
+        destination_directory = QFileDialog.getExistingDirectory(
+                                            self, 
+                                            "Destination directory",
+                                            self.label_destination_dir.text())
         if destination_directory:
             self.label_destination_dir.setText(destination_directory)
     
@@ -120,12 +133,36 @@ class FilesOrganizerWindow(QMainWindow):
     def filter_by_extension(self):
         if self.filter_by_extension_checkbox.isChecked():
             self.filter_by_extension = QComboBox()
-            self.filter_by_extension.addItems(["A", "B", "C"])
+            self.filter_by_extension.addItems(["jpg", "png", "bmp"])
             self.checkbox_layout_extension.addWidget(self.filter_by_extension)
         else:
             i = self.checkbox_layout_extension.indexOf(self.filter_by_extension)
             self.checkbox_layout_extension.takeAt(i)
             self.filter_by_extension.deleteLater()
+
+    def filter_by_date(self):
+        if self.filter_by_date_checkbox.isChecked():
+            self.to_date_label = QLabel()
+            self.to_date_label.setText("From date time:")
+            self.filter_by_to_date = QDateTimeEdit(calendarPopup=True, 
+                                                   dateTime=datetime.now())
+            self.from_date_label = QLabel()
+            self.from_date_label.setText("To date time:")
+            self.filter_by_from_date = QDateTimeEdit(calendarPopup=True,
+                                                     dateTime=datetime.now())
+            self.checkbox_layout_date.addWidget(self.to_date_label)
+            self.checkbox_layout_date.addWidget(self.filter_by_to_date)
+            self.checkbox_layout_date.addWidget(self.from_date_label)
+            self.checkbox_layout_date.addWidget(self.filter_by_from_date)
+            
+        else:
+            widgets = [self.filter_by_to_date, self.filter_by_from_date, 
+                       self.to_date_label, self.from_date_label]
+            
+            for widget in widgets:
+                widget_index = self.checkbox_layout_date.indexOf(widget)
+                self.checkbox_layout_date.takeAt(widget_index)
+                widget.deleteLater()
         
     def _mainWindow(self):
         print("newWindow")
