@@ -84,11 +84,11 @@ class FilesOrganizerWindow(QMainWindow):
         self.label_destination_dir = QLabel()
         
         self.filter_by_name_checkbox = QCheckBox("Filter by name", self)
-        self.filter_by_name_checkbox.toggled.connect(self.filter_by_name)
+        self.filter_by_name_checkbox.toggled.connect(self.get_file_name)
         self.filter_by_extension_checkbox = QCheckBox("Filter by extension", self)
-        self.filter_by_extension_checkbox.toggled.connect(self.filter_by_extension)
+        self.filter_by_extension_checkbox.toggled.connect(self.get_extension)
         self.filter_by_date_checkbox = QCheckBox("Filter by date range", self)
-        self.filter_by_date_checkbox.toggled.connect(self.filter_by_date)
+        self.filter_by_date_checkbox.toggled.connect(self.get_dates)
         
         merged_group = QButtonGroup(self.widget)
         self.radiobutton_union = QRadioButton("Union")
@@ -105,6 +105,12 @@ class FilesOrganizerWindow(QMainWindow):
         self.radiobutton_move = QRadioButton("Move")
         action_group.addButton(self.radiobutton_move)
         self.radiobutton_move.toggled.connect(lambda:self.copy_or_move_action(self.radiobutton_move))
+        
+        summary_label = QLabel()
+        summary_label.setText("Files to be copied or moved:")
+        self.files_list_label = QLabel()
+        self.files_list_label.setText(self.get_list_of_files())
+        self.run_action_button = QPushButton("RUN")
         
         main_layout.addWidget(button_source_dir)
         main_layout.addWidget(self.label_source_dir)
@@ -125,6 +131,11 @@ class FilesOrganizerWindow(QMainWindow):
         self.radiobutton_layout.addWidget(self.radiobutton_intersection, 0, 1)
         self.radiobutton_layout.addWidget(self.radiobutton_copy, 1, 0)
         self.radiobutton_layout.addWidget(self.radiobutton_move, 1, 1)
+        
+        main_layout.addLayout(self.summary_layout)
+        self.summary_layout.addWidget(summary_label)
+        self.summary_layout.addWidget(self.files_list_label)
+        self.summary_layout.addWidget(self.run_action_button)
         
         main_layout.addStretch()
         main_layout.setContentsMargins(10, 10, 20, 30)
@@ -147,7 +158,7 @@ class FilesOrganizerWindow(QMainWindow):
         if destination_directory:
             self.label_destination_dir.setText(destination_directory)
     
-    def filter_by_name(self):
+    def get_file_name(self):
         if self.filter_by_name_checkbox.isChecked():
             self.filter_by_name = QLineEdit()
             self.checkbox_layout_name.addWidget(self.filter_by_name)
@@ -156,7 +167,7 @@ class FilesOrganizerWindow(QMainWindow):
             self.checkbox_layout_name.takeAt(i)
             self.filter_by_name.deleteLater()
     
-    def filter_by_extension(self):
+    def get_extension(self):
         if self.filter_by_extension_checkbox.isChecked():
             self.filter_by_extension = QComboBox()
             self.filter_by_extension.addItems(["jpg", "png", "bmp"])
@@ -166,7 +177,7 @@ class FilesOrganizerWindow(QMainWindow):
             self.checkbox_layout_extension.takeAt(i)
             self.filter_by_extension.deleteLater()
 
-    def filter_by_date(self):
+    def get_dates(self):
         if self.filter_by_date_checkbox.isChecked():
             self.to_date_label = QLabel()
             self.to_date_label.setText("From date time:")
@@ -197,6 +208,9 @@ class FilesOrganizerWindow(QMainWindow):
     def copy_or_move_action(self, button1):
         """Method should return string of name of the button. Adjust function name!!!"""
         pass
+    
+    def get_list_of_files(self):
+        return "List of files here!!!"
      
     def _mainWindow(self):
         print("newWindow")
