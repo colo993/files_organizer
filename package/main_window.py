@@ -72,8 +72,8 @@ class FilesOrganizerWindow(QMainWindow):
         self.checkbox_layout_name = QVBoxLayout() 
         self.checkbox_layout_extension = QVBoxLayout() 
         self.checkbox_layout_date = QVBoxLayout()
-        self.radiobutton_layout = QHBoxLayout()
-        self.radiobutton_copy_or_move_layout = QHBoxLayout()
+        self.radiobutton_layout = QGridLayout()
+        self.summary_layout = QVBoxLayout()
         
         button_source_dir = QPushButton("Select source directory")
         button_destination_dir = QPushButton("Select destination directory")
@@ -121,12 +121,10 @@ class FilesOrganizerWindow(QMainWindow):
         self.checkbox_layout_date.addWidget(self.filter_by_date_checkbox)
         
         main_layout.addLayout(self.radiobutton_layout)
-        self.radiobutton_layout.addWidget(self.radiobutton_union)
-        self.radiobutton_layout.addWidget(self.radiobutton_intersection)
-        
-        main_layout.addLayout(self.radiobutton_copy_or_move_layout)
-        self.radiobutton_copy_or_move_layout.addWidget(self.radiobutton_copy)
-        self.radiobutton_copy_or_move_layout.addWidget(self.radiobutton_move)
+        self.radiobutton_layout.addWidget(self.radiobutton_union, 0, 0)
+        self.radiobutton_layout.addWidget(self.radiobutton_intersection, 0, 1)
+        self.radiobutton_layout.addWidget(self.radiobutton_copy, 1, 0)
+        self.radiobutton_layout.addWidget(self.radiobutton_move, 1, 1)
         
         main_layout.addStretch()
         main_layout.setContentsMargins(10, 10, 20, 30)
