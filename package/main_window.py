@@ -19,7 +19,9 @@ from PyQt6.QtWidgets import (
     QCheckBox,
     QComboBox,
     QDateTimeEdit,
-    QCalendarWidget
+    QCalendarWidget,
+    QRadioButton,
+    QButtonGroup 
 )
 
 from package.about_window import AboutWindow
@@ -70,11 +72,13 @@ class FilesOrganizerWindow(QMainWindow):
         self.checkbox_layout_name = QVBoxLayout() 
         self.checkbox_layout_extension = QVBoxLayout() 
         self.checkbox_layout_date = QVBoxLayout()
+        self.radiobutton_layout = QHBoxLayout()
+        self.radiobutton_copy_or_move_layout = QHBoxLayout()
         
         button_source_dir = QPushButton("Select source directory")
         button_destination_dir = QPushButton("Select destination directory")
-        button_source_dir.clicked.connect(self.source_directory)
-        button_destination_dir.clicked.connect(self.destination_directory)
+        button_source_dir.clicked.connect(self.get_source_directory)
+        button_destination_dir.clicked.connect(self.get_destination_directory)
         
         self.label_source_dir = QLabel()
         self.label_destination_dir = QLabel()
@@ -85,6 +89,22 @@ class FilesOrganizerWindow(QMainWindow):
         self.filter_by_extension_checkbox.toggled.connect(self.filter_by_extension)
         self.filter_by_date_checkbox = QCheckBox("Filter by date range", self)
         self.filter_by_date_checkbox.toggled.connect(self.filter_by_date)
+        
+        merged_group = QButtonGroup(self.widget)
+        self.radiobutton_union = QRadioButton("Union")
+        merged_group.addButton(self.radiobutton_union)
+        self.radiobutton_union.toggled.connect(lambda:self.get_merged_type(self.radiobutton_union))
+        self.radiobutton_intersection = QRadioButton("Intersection")
+        merged_group.addButton(self.radiobutton_intersection)
+        self.radiobutton_intersection.toggled.connect(lambda:self.get_merged_type(self.radiobutton_intersection))
+        
+        action_group = QButtonGroup(self.widget)
+        self.radiobutton_copy = QRadioButton("Copy")
+        action_group.addButton(self.radiobutton_copy)
+        self.radiobutton_copy.toggled.connect(lambda:self.copy_or_move_action(self.radiobutton_copy))
+        self.radiobutton_move = QRadioButton("Move")
+        action_group.addButton(self.radiobutton_move)
+        self.radiobutton_move.toggled.connect(lambda:self.copy_or_move_action(self.radiobutton_move))
         
         main_layout.addWidget(button_source_dir)
         main_layout.addWidget(self.label_source_dir)
@@ -100,12 +120,20 @@ class FilesOrganizerWindow(QMainWindow):
         main_layout.addLayout(self.checkbox_layout_date)
         self.checkbox_layout_date.addWidget(self.filter_by_date_checkbox)
         
+        main_layout.addLayout(self.radiobutton_layout)
+        self.radiobutton_layout.addWidget(self.radiobutton_union)
+        self.radiobutton_layout.addWidget(self.radiobutton_intersection)
+        
+        main_layout.addLayout(self.radiobutton_copy_or_move_layout)
+        self.radiobutton_copy_or_move_layout.addWidget(self.radiobutton_copy)
+        self.radiobutton_copy_or_move_layout.addWidget(self.radiobutton_move)
+        
         main_layout.addStretch()
         main_layout.setContentsMargins(10, 10, 20, 30)
         self.widget.setLayout(main_layout)
         self.setCentralWidget(self.widget)
         
-    def source_directory(self):
+    def get_source_directory(self):
         source_directory = QFileDialog.getExistingDirectory(
                                             self, 
                                             "Source directory",
@@ -113,7 +141,7 @@ class FilesOrganizerWindow(QMainWindow):
         if source_directory:
             self.label_source_dir.setText(source_directory)
     
-    def destination_directory(self):
+    def get_destination_directory(self):
         destination_directory = QFileDialog.getExistingDirectory(
                                             self, 
                                             "Destination directory",
@@ -163,7 +191,15 @@ class FilesOrganizerWindow(QMainWindow):
                 widget_index = self.checkbox_layout_date.indexOf(widget)
                 self.checkbox_layout_date.takeAt(widget_index)
                 widget.deleteLater()
-        
+    
+    def get_merged_type(self, button):
+        """Method should return string of name of the button. Adjust function name!!!"""
+        pass
+    
+    def copy_or_move_action(self, button1):
+        """Method should return string of name of the button. Adjust function name!!!"""
+        pass
+     
     def _mainWindow(self):
         print("newWindow")
     
