@@ -90,27 +90,28 @@ class FilesOrganizerWindow(QMainWindow):
         self.filter_by_date_checkbox = QCheckBox("Filter by date range", self)
         self.filter_by_date_checkbox.toggled.connect(self.get_dates)
         
-        merged_group = QButtonGroup(self.widget)
+        self.merged_group = QButtonGroup(self.widget)
         self.radiobutton_union = QRadioButton("Union")
-        merged_group.addButton(self.radiobutton_union)
-        self.radiobutton_union.toggled.connect(lambda:self.get_merged_type(self.radiobutton_union))
+        self.merged_group.addButton(self.radiobutton_union, 0)
+        self.radiobutton_union.toggled.connect(self.get_merged_type)
         self.radiobutton_intersection = QRadioButton("Intersection")
-        merged_group.addButton(self.radiobutton_intersection)
-        self.radiobutton_intersection.toggled.connect(lambda:self.get_merged_type(self.radiobutton_intersection))
+        self.merged_group.addButton(self.radiobutton_intersection, 1)
+        self.radiobutton_intersection.toggled.connect(self.get_merged_type)
         
-        action_group = QButtonGroup(self.widget)
+        self.action_group = QButtonGroup(self.widget)
         self.radiobutton_copy = QRadioButton("Copy")
-        action_group.addButton(self.radiobutton_copy)
-        self.radiobutton_copy.toggled.connect(lambda:self.copy_or_move_action(self.radiobutton_copy))
+        self.action_group.addButton(self.radiobutton_copy, 2)
+        self.radiobutton_copy.toggled.connect(self.copy_or_move_action)
         self.radiobutton_move = QRadioButton("Move")
-        action_group.addButton(self.radiobutton_move)
-        self.radiobutton_move.toggled.connect(lambda:self.copy_or_move_action(self.radiobutton_move))
+        self.action_group.addButton(self.radiobutton_move, 3)
+        self.radiobutton_move.toggled.connect(self.copy_or_move_action)
         
         summary_label = QLabel()
         summary_label.setText("Files to be copied or moved:")
         self.files_list_label = QLabel()
         self.files_list_label.setText(self.get_list_of_files())
         self.run_action_button = QPushButton("RUN")
+        self.run_action_button.clicked.connect(self.start_process)
         
         main_layout.addWidget(button_source_dir)
         main_layout.addWidget(self.label_source_dir)
@@ -157,6 +158,7 @@ class FilesOrganizerWindow(QMainWindow):
                                             self.label_destination_dir.text())
         if destination_directory:
             self.label_destination_dir.setText(destination_directory)
+        
     
     def get_file_name(self):
         if self.filter_by_name_checkbox.isChecked():
@@ -201,16 +203,17 @@ class FilesOrganizerWindow(QMainWindow):
                 self.checkbox_layout_date.takeAt(widget_index)
                 widget.deleteLater()
     
-    def get_merged_type(self, button):
-        """Method should return string of name of the button. Adjust function name!!!"""
-        pass
-    
-    def copy_or_move_action(self, button1):
-        """Method should return string of name of the button. Adjust function name!!!"""
-        pass
+    def get_merged_type(self):
+        self.merged_type = self.sender()
+        
+    def copy_or_move_action(self):
+        self.action_type = self.sender()
     
     def get_list_of_files(self):
         return "List of files here!!!"
+    
+    def start_process(self):
+        pass
      
     def _mainWindow(self):
         print("newWindow")
