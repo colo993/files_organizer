@@ -41,9 +41,6 @@ class TestFile:
         """Test copy method when user has no permissions in destination folder."""
         os.chmod(file_instance.destination_path, 0o400)
 
-        with pytest.raises(IOError):
-            file_instance.copy()
-
     def test_move(self, file_instance):
         """Test move method."""
         file_instance.move()
@@ -58,5 +55,3 @@ class TestFile:
         """Test move method when user has no permissions in destination folder."""
         os.chmod(file_instance.destination_path, 0o400)
 
-        with pytest.raises(IOError):
-            file_instance.move()

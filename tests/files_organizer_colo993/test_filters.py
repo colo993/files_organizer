@@ -50,7 +50,12 @@ class TestFilesList:
         result = files_list_instance.filter_by_name("basic")
         assert len(result) == 3
         assert all(re.search(r"basic", file) for file in result)
-
+    
+    def test_filter_by_name_empty_input(self, files_list_instance):
+        """Test filtering list of files based on empty input."""
+        result = files_list_instance.filter_by_name("")
+        assert len(result) == 0
+        
     def test_filter_by_name_invalid_input(self, files_list_instance):
         """Test filtering list of files based on given extension with
         invalid name.
