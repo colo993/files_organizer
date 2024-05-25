@@ -22,7 +22,7 @@ class FilesList:
     def filter_by_name(self, file_name_to_search) -> list:
         """Find the files which matches the given word"""
         return [file for file in os.listdir(path=self.source_path) if 
-                file_name_to_search in file]
+                    file_name_to_search in file and file_name_to_search]
     
     def filter_by_date_creation(self, from_time, to_time) -> list:
         """Find the files created in between the given datetime range"""
