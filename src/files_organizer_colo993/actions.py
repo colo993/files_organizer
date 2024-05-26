@@ -3,7 +3,7 @@
 import os
 import shutil
 
-class File:
+class Files:
     """Copy or move selected files to destination folder"""
     def __init__(self, list_of_files, source_path, destination_path):
         self.list_of_files = list_of_files

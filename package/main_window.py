@@ -26,7 +26,7 @@ from PyQt6.QtWidgets import (
 
 from package.about_window import AboutWindow
 from package.how_to_use_window import HowToUseWindow
-from files_organizer_colo993 import filters, action
+from files_organizer_colo993 import actions, filters
 
 WINDOW_SIZE = 255
 
@@ -217,7 +217,7 @@ class FilesOrganizerWindow(QMainWindow):
         self.files_list = filters.FilesList(self.label_source_dir.text())
         filtered_list = self.files_list.filter_by_name(self.filter_by_name.text())
         
-        file = action.File(filtered_list, self.label_source_dir.text(), self.label_destination_dir.text())
+        file = actions.Files(filtered_list, self.label_source_dir.text(), self.label_destination_dir.text())
         file.copy()
         
      

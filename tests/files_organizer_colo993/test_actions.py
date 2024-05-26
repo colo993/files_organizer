@@ -5,7 +5,7 @@ import tempfile
 
 import pytest
 
-from files_organizer_colo993 import action
+from files_organizer_colo993 import actions
 
 
 class TestFile:
@@ -29,7 +29,7 @@ class TestFile:
             file_path = os.path.join(source_path, file)
             with open(file_path, "w") as f:
                 f.write("Test content")
-        return action.File(list_of_files, source_path, destination_path)
+        return actions.Files(list_of_files, source_path, destination_path)
 
     def test_copy(self, file_instance):
         """Test copy method."""

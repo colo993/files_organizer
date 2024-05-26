@@ -45,14 +45,3 @@ class FilesList:
             return list(set.intersection(*map(set,filtered_list)))
         elif option == 'union':
             return list(set.union(*map(set,filtered_list)))    
-if __name__ == "__main__":
-    files_list = FilesList('/home/colo/test')
-    x = files_list.filter_by_extension('png')
-    print(files_list.filter_by_date_creation(datetime(2024,8,10,12,10,12), datetime(2024,9,10,12,10,12)))
-    my_str = ""
-    if my_str.strip():
-        print("Yes")
-    print(datetime(2024,8,10,12,10,12))
-    get_list = files_list.get('union', x)
-    print(sorted(get_list))
-    print(type(get_list))
