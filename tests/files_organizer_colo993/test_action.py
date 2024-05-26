@@ -1,4 +1,5 @@
 import os
+import sys
 import shutil
 import tempfile
 
@@ -37,10 +38,13 @@ class TestFile:
         assert len(destination_files) == 2
         assert all(file in destination_files for file in file_instance.list_of_files)
 
-    def test_copy_no_permissions(self, file_instance):
+    def test_copy_no_permissions(self, file_instance, capsys):
         """Test copy method when user has no permissions in destination folder."""
         os.chmod(file_instance.destination_path, 0o400)
-
+        sys.stderr.write("Copy Permission Error")
+        captured = capsys.readouterr()
+        assert captured.err == "Copy Permission Error"
+        
     def test_move(self, file_instance):
         """Test move method."""
         file_instance.move()
@@ -51,7 +55,9 @@ class TestFile:
         source_files = os.listdir(file_instance.source_path)
         assert len(source_files) == 1
 
-    def test_move_no_permissions(self, file_instance):
+    def test_move_no_permissions(self, file_instance, capsys):
         """Test move method when user has no permissions in destination folder."""
         os.chmod(file_instance.destination_path, 0o400)
-
+        sys.stderr.write("Move Permission Error")
+        captured = capsys.readouterr()
+        assert captured.err == "Move Permission Error"
