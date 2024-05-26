@@ -14,23 +14,31 @@ class Files:
         """Copy specified list of files"""
         for file in self.list_of_files:
             try:
-                shutil.copy(f"{self.source_path}/{file}", f"{self.destination_path}/{file}")
+                shutil.copy(f"{self.source_path}/{file}", 
+                            f"{self.destination_path}/{file}")
             except PermissionError:
-                print(f"Permission error copying {file} from {self.source_path} to {self.destination_path}")
+                print(f"Permission error copying {file} from \
+                      {self.source_path} to {self.destination_path}")
             except IOError:
                 os.umask(0)
-                os.makedirs(os.path.dirname(f"{self.destination_path}/{file}"), exist_ok=True)
-                shutil.copy(f"{self.source_path}/{file}", f"{self.destination_path}/{file}")
+                os.makedirs(os.path.dirname(f"{self.destination_path}/{file}"), 
+                            exist_ok=True)
+                shutil.copy(f"{self.source_path}/{file}", 
+                            f"{self.destination_path}/{file}")
             
 
     def move(self) -> None:
         """Move specified list of files"""
         for file in self.list_of_files:
             try:
-                shutil.move(f"{self.source_path}/{file}", f"{self.destination_path}/{file}")
+                shutil.move(f"{self.source_path}/{file}", 
+                            f"{self.destination_path}/{file}")
             except PermissionError:
-                print(f"Permission error moving {file} from {self.source_path} to {self.destination_path}")
+                print(f"Permission error moving {file} from \
+                      {self.source_path} to {self.destination_path}")
             except IOError:
                 os.umask(0)
-                os.makedirs(os.path.dirname(f"{self.destination_path}/{file}"), exist_ok=True)       
-                shutil.move(f"{self.source_path}/{file}", f"{self.destination_path}/{file}")   
+                os.makedirs(os.path.dirname(f"{self.destination_path}/{file}"), 
+                            exist_ok=True)       
+                shutil.move(f"{self.source_path}/{file}", 
+                            f"{self.destination_path}/{file}")   

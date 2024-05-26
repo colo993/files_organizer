@@ -8,6 +8,7 @@ from files_organizer_colo993 import filters
 
 
 class TestFilesList:
+    """Tests for class FilesList from filters.py file"""
     @pytest.fixture
     def files_list_instance(self, tmpdir):
         """
@@ -69,7 +70,8 @@ class TestFilesList:
         print(from_time)
         to_time = datetime.fromtimestamp(2)
         print(to_time)
-        result = files_list_instance.filter_by_date_creation(from_time, to_time)
+        result = files_list_instance.filter_by_date_creation(from_time, 
+                                                             to_time)
         assert len(result) == 2
         assert ["basic_file1.jpg", "ExtEnded_file2.jpg"] == result
 
@@ -89,7 +91,8 @@ class TestFilesList:
         dates = files_list_instance.filter_by_date_creation(
             datetime.fromtimestamp(1), datetime.fromtimestamp(6)
         )
-        assert files_list_instance.get("intersection", extension, names, dates) == [
+        assert files_list_instance.get("intersection", 
+                                       extension, names, dates) == [
             "ExtEnded_file4.png"
         ]
 
