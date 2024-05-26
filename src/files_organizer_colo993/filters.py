@@ -11,7 +11,7 @@ import re
 from files_organizer_colo993 import get_extensions_data
 
 class FilesList:
-    """Filter list files by different options"""
+    """Filter list files by different options."""
     def __init__(self, source_path):
         self.source_path = source_path
     
@@ -22,12 +22,12 @@ class FilesList:
                           file.lower())]
     
     def filter_by_name(self, file_name_to_search) -> list:
-        """Find the files which matches the given word"""
+        """Find the files which matches the given word."""
         return [file for file in os.listdir(path=self.source_path) if 
                     file_name_to_search in file and file_name_to_search]
     
     def filter_by_date_creation(self, from_time, to_time) -> list:
-        """Find the files created in between the given datetime range"""
+        """Find the files created in between the given datetime range."""
         files_in_datetime_range = []
         for file in os.listdir(path=self.source_path):
             time_in_epoch = os.path.getmtime(f"{self.source_path}/{file}")
@@ -40,7 +40,7 @@ class FilesList:
 
     def get(self, option, extensions=None, names=None, dates=None) -> list:
         """Return files present in all lists or files from all lists
-        filtered by one or multiple conditions
+        filtered by one or multiple conditions.
         """
         entry_list = [extensions, names, dates] 
         filtered_list = [x for x in entry_list if x is not None]

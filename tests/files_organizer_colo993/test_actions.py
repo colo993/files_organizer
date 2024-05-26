@@ -9,7 +9,7 @@ from files_organizer_colo993 import actions
 
 
 class TestFiles:
-    """Tests for class Files from action.py file"""
+    """Tests for class Files from action.py file."""
     @pytest.fixture
     def mock_files(self, tmpdir):
         """Create mock files for testing."""

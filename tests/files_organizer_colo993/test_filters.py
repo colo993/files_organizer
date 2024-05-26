@@ -8,7 +8,7 @@ from files_organizer_colo993 import filters
 
 
 class TestFilesList:
-    """Tests for class FilesList from filters.py file"""
+    """Tests for class FilesList from filters.py file."""
     @pytest.fixture
     def files_list_instance(self, tmpdir):
         """
