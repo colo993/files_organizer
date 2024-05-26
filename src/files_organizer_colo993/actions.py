@@ -26,7 +26,6 @@ class Files:
                 shutil.copy(f"{self.source_path}/{file}", 
                             f"{self.destination_path}/{file}")
             
-
     def move(self) -> None:
         """Move specified list of files"""
         for file in self.list_of_files:

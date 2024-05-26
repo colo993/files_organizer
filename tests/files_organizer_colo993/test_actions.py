@@ -42,7 +42,8 @@ class TestFiles:
 
     def test_copy_no_permissions(self, file_instance, capsys):
         """Test copy method when user has no permissions 
-            in destination folder."""
+        in destination folder.
+        """
         os.chmod(file_instance.destination_path, 0o400)
         sys.stderr.write("Copy Permission Error")
         captured = capsys.readouterr()
@@ -61,7 +62,8 @@ class TestFiles:
 
     def test_move_no_permissions(self, file_instance, capsys):
         """Test move method when user has no permissions 
-            in destination folder."""
+        in destination folder.
+        """
         os.chmod(file_instance.destination_path, 0o400)
         sys.stderr.write("Move Permission Error")
         captured = capsys.readouterr()
