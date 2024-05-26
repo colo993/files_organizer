@@ -31,17 +31,21 @@ from files_organizer_colo993 import actions, filters
 WINDOW_SIZE = 255
 
 class FilesOrganizerWindow(QMainWindow):
+    """Files organizer main window with widgets to copy or move files."""
     def __init__(self):
+        """Initis FilesOrganizer window with GUI."""
         super().__init__()
         self._initUI()
         self._createMenu()
         self._createWidgets()
     
     def _initUI(self):
+        """Set window title and size."""
         self.setWindowTitle("Files Organizer")
         self.setGeometry(800, 800, 500, 600)
         
     def _createMenu(self):
+        """Add menu bar."""
         toolbar = QToolBar("My main toolbar.")
         self.addToolBar(toolbar)
         
@@ -68,6 +72,7 @@ class FilesOrganizerWindow(QMainWindow):
         help_menu.addAction(about_button)
     
     def _createWidgets(self):
+        """Add widgets."""
         self.widget = QWidget()
         main_layout = QVBoxLayout()
         self.checkbox_layout_name = QVBoxLayout() 
@@ -145,6 +150,7 @@ class FilesOrganizerWindow(QMainWindow):
         self.setCentralWidget(self.widget)
         
     def get_source_directory(self):
+        """Obtain source directory path and print it out on the screen."""
         source_directory = QFileDialog.getExistingDirectory(
                                             self, 
                                             "Source directory",
@@ -153,6 +159,7 @@ class FilesOrganizerWindow(QMainWindow):
             self.label_source_dir.setText(source_directory)
     
     def get_destination_directory(self):
+        """Obtain destination directory path and print it out on the screen."""
         destination_directory = QFileDialog.getExistingDirectory(
                                             self, 
                                             "Destination directory",
@@ -162,6 +169,9 @@ class FilesOrganizerWindow(QMainWindow):
         
     
     def get_file_name(self):
+        """Activate line editor when Checkbox filter_by_name is checked
+        to type file name for filtering.
+        """
         if self.filter_by_name_checkbox.isChecked():
             self.filter_by_name = QLineEdit()
             self.checkbox_layout_name.addWidget(self.filter_by_name)
@@ -171,6 +181,10 @@ class FilesOrganizerWindow(QMainWindow):
             self.filter_by_name.deleteLater()
     
     def get_extension(self):
+        """Activate combobox with list of extensions when Checkbox 
+        filter_by_extension is checked to chose type of extension 
+        for filtering.
+        """
         if self.filter_by_extension_checkbox.isChecked():
             self.filter_by_extension = QComboBox()
             self.filter_by_extension.addItems(["jpg", "png", "bmp"])
@@ -181,6 +195,9 @@ class FilesOrganizerWindow(QMainWindow):
             self.filter_by_extension.deleteLater()
 
     def get_dates(self):
+        """Activate datetime widget when Checkbox filter_by_date is 
+        checked to chose datetime range for filtering.
+        """
         if self.filter_by_date_checkbox.isChecked():
             self.to_date_label = QLabel()
             self.to_date_label.setText("From date time:")
@@ -205,15 +222,21 @@ class FilesOrganizerWindow(QMainWindow):
                 widget.deleteLater()
     
     def get_merged_type(self):
+        """Obtain value of radio buttons Union or Intersection."""
         self.merged_type = self.sender()
         
     def copy_or_move_action(self):
+        """Obtain value of radio buttons Copy or Move."""
         self.action_type = self.sender()
     
     def get_list_of_files(self):
+        """Return list of files to be copied or moved according to
+        chosen option by the user.
+        """
         return "List of files here!!!"
     
     def start_process(self):
+        """Execute copy or move files after clicking button."""
         self.files_list = filters.FilesList(self.label_source_dir.text())
         filtered_list = self.files_list.filter_by_name(self.filter_by_name.text())
         
@@ -222,13 +245,16 @@ class FilesOrganizerWindow(QMainWindow):
         
      
     def _mainWindow(self):
+        """Reset FilesOrganizer Window to initial stage."""
         print("newWindow")
     
     def _howtouseWindow(self):
+        """Open HowToUse window."""
         self.howtouse = HowToUseWindow()
         self.howtouse.show()     
     
     def _aboutWindow(self):
+        """Open About window."""
         self.about = AboutWindow()
         self.about.show()
   
