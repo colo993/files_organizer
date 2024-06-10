@@ -91,7 +91,8 @@ class FilesOrganizerWindow(QMainWindow):
         
         self._filter_by_name_checkbox = QCheckBox("Filter by name", self)
         self._filter_by_name_checkbox.toggled.connect(self._get_file_name)
-        self._filter_by_extension_checkbox = QCheckBox("Filter by extension", self)
+        self._filter_by_extension_checkbox = QCheckBox("Filter by extension", 
+                                                       self)
         self._filter_by_extension_checkbox.toggled.connect(self._get_extension)
         self._filter_by_date_checkbox = QCheckBox("Filter by date range", self)
         self._filter_by_date_checkbox.toggled.connect(self._get_dates)
@@ -128,7 +129,8 @@ class FilesOrganizerWindow(QMainWindow):
         self._checkbox_layout_name.addWidget(self._filter_by_name_checkbox)
         
         main_layout.addLayout(self._checkbox_layout_extension)
-        self._checkbox_layout_extension.addWidget(self._filter_by_extension_checkbox)
+        self._checkbox_layout_extension.addWidget(
+                                            self._filter_by_extension_checkbox)
         
         main_layout.addLayout(self._checkbox_layout_date)
         self._checkbox_layout_date.addWidget(self._filter_by_date_checkbox)
@@ -188,9 +190,11 @@ class FilesOrganizerWindow(QMainWindow):
         if self._filter_by_extension_checkbox.isChecked():
             self._filter_by_extension_widget = QComboBox()
             self._filter_by_extension_widget.addItems(["jpg", "png", "bmp"])
-            self._checkbox_layout_extension.addWidget(self._filter_by_extension_widget)
+            self._checkbox_layout_extension.addWidget(
+                                            self._filter_by_extension_widget)
         else:
-            i = self._checkbox_layout_extension.indexOf(self._filter_by_extension_widget)
+            i = self._checkbox_layout_extension.indexOf(
+                                            self._filter_by_extension_widget)
             self._checkbox_layout_extension.takeAt(i)
             self._filter_by_extension_widget.deleteLater()
 
@@ -241,23 +245,30 @@ class FilesOrganizerWindow(QMainWindow):
         files_list = filters.FilesList(self._label_source_dir.text())
 
         if self._filter_by_name_checkbox.isChecked():
-            filtered_by_name = files_list.filter_by_name(self._filter_by_name_widget.text()) 
+            filtered_by_name = files_list.filter_by_name(
+                                            self._filter_by_name_widget.text()) 
         else:
             filtered_by_name = None
             
         if self._filter_by_extension_checkbox.isChecked():
-            filtered_by_extension = files_list.filter_by_extension(self._filter_by_extension_widget.currentText())
+            filtered_by_extension = files_list.filter_by_extension(
+                                self._filter_by_extension_widget.currentText())
         else:
             filtered_by_extension = None
             
         if self._filter_by_date_checkbox.isChecked():
-            from_date = str(self._filter_from_date_widget.dateTime().toPyDateTime().replace(microsecond=0))
-            to_date = str(self._filter_to_date_widget.dateTime().toPyDateTime().replace(microsecond=0))
+            from_date = str(self._filter_from_date_widget.dateTime().
+                                        toPyDateTime().replace(microsecond=0))
+            to_date = str(self._filter_to_date_widget.dateTime().
+                                        toPyDateTime().replace(microsecond=0))
             
-            from_date_converted = datetime.strptime(from_date, "%Y-%m-%d %H:%M:%S")
-            to_date_converted = datetime.strptime(to_date, "%Y-%m-%d %H:%M:%S")
+            from_date_converted = datetime.strptime(from_date, 
+                                                    "%Y-%m-%d %H:%M:%S")
+            to_date_converted = datetime.strptime(to_date, 
+                                                    "%Y-%m-%d %H:%M:%S")
  
-            filtered_by_date = files_list.filter_by_date_creation(from_date_converted, to_date_converted)
+            filtered_by_date = files_list.filter_by_date_creation(
+                                        from_date_converted, to_date_converted)
         else:
             filtered_by_date = None
 
