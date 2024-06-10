@@ -1,7 +1,7 @@
 import sys
 
 from datetime import datetime
-from PyQt6.QtCore import Qt, QPoint
+from PyQt6 import QtCore
 from PyQt6.QtGui import QAction, QIcon, QGuiApplication
 from PyQt6.QtWidgets import (
     QApplication,
@@ -50,7 +50,8 @@ class FilesOrganizerWindow(QMainWindow):
         self.addToolBar(self._toolbar)
         
         self._reset_to_default_button = QAction("&New", self)
-        self._reset_to_default_button.triggered.connect(self._mainWindow)
+        self._reset_to_default_button.triggered.connect(
+                                                    self._restartMainWindow)
         
         self._exit_button = QAction("&Exit", self)
         self._exit_button.triggered.connect(self.close)
@@ -283,11 +284,10 @@ class FilesOrganizerWindow(QMainWindow):
         #file = actions.Files(self._merged_type.text(), )
         #file.copy()
         
-        
-     
-    def _mainWindow(self):
-        """Reset FilesOrganizer Window to initial stage."""
-        print("newWindow")
+    def _restartMainWindow(self):
+        """Reset FilesOrganizer main window to initial stage."""
+        QtCore.QCoreApplication.quit()
+        QtCore.QProcess.startDetached(sys.executable, sys.argv)
     
     def _howtouseWindow(self):
         """Open HowToUse window."""
