@@ -199,22 +199,23 @@ class FilesOrganizerWindow(QMainWindow):
         checked to chose datetime range for filtering.
         """
         if self._filter_by_date_checkbox.isChecked():
-            self._to_date_label = QLabel()
-            self._to_date_label.setText("From date time:")  
-            self._filter_to_date_widget = QDateTimeEdit(calendarPopup=True, 
-                                                   dateTime=datetime.now()) 
             self._from_date_label = QLabel()
-            self._from_date_label.setText("To date time:")    
+            self._from_date_label.setText("From date time:")    
             self._filter_from_date_widget = QDateTimeEdit(calendarPopup=True,
                                                      dateTime=datetime.now())
-            self._checkbox_layout_date.addWidget(self._to_date_label)
-            self._checkbox_layout_date.addWidget(self._filter_to_date_widget)
+            self._to_date_label = QLabel()
+            self._to_date_label.setText("To date time:")  
+            self._filter_to_date_widget = QDateTimeEdit(calendarPopup=True, 
+                                                   dateTime=datetime.now()) 
             self._checkbox_layout_date.addWidget(self._from_date_label)
             self._checkbox_layout_date.addWidget(self._filter_from_date_widget)
-            
+            self._checkbox_layout_date.addWidget(self._to_date_label)
+            self._checkbox_layout_date.addWidget(self._filter_to_date_widget)
         else:
-            list_of_date_widgets = [self._filter_to_date_widget, self._filter_from_date_widget, 
-                       self._to_date_label, self._from_date_label]
+            list_of_date_widgets = [self._filter_to_date_widget, 
+                                    self._filter_from_date_widget, 
+                                    self._to_date_label, 
+                                    self._from_date_label]
             for date_widget in list_of_date_widgets:
                 widget_index = self._checkbox_layout_date.indexOf(date_widget)
                 self._checkbox_layout_date.takeAt(widget_index)
@@ -222,11 +223,11 @@ class FilesOrganizerWindow(QMainWindow):
     
     def _get_merged_type(self):
         """Obtain value of radio buttons Union or Intersection."""
-        self.merged_type = self.sender()
+        self._merged_type = self.sender()
         
     def _copy_or_move_action(self):
         """Obtain value of radio buttons Copy or Move."""
-        self.action_type = self.sender()
+        self._action_type = self.sender()
     
     def _get_list_of_files(self):
         """Return list of files to be copied or moved according to
@@ -238,10 +239,39 @@ class FilesOrganizerWindow(QMainWindow):
     def _start_process(self):
         """Copy or move selected files after clicking the button."""
         files_list = filters.FilesList(self._label_source_dir.text())
-        filtered_list = files_list.filter_by_name_widget(self._filter_by_name_widget.text())
+
+        if self._filter_by_name_checkbox.isChecked():
+            filtered_by_name = files_list.filter_by_name(self._filter_by_name_widget.text()) 
+        else:
+            filtered_by_name = None
+            
+        if self._filter_by_extension_checkbox.isChecked():
+            filtered_by_extension = files_list.filter_by_extension(self._filter_by_extension_widget.currentText())
+        else:
+            filtered_by_extension = None
+            
+        if self._filter_by_date_checkbox.isChecked():
+            from_date = str(self._filter_from_date_widget.dateTime().toPyDateTime().replace(microsecond=0))
+            to_date = str(self._filter_to_date_widget.dateTime().toPyDateTime().replace(microsecond=0))
+            
+            from_date_converted = datetime.strptime(from_date, "%Y-%m-%d %H:%M:%S")
+            to_date_converted = datetime.strptime(to_date, "%Y-%m-%d %H:%M:%S")
+ 
+            filtered_by_date = files_list.filter_by_date_creation(from_date_converted, to_date_converted)
+        else:
+            filtered_by_date = None
+
+        all_files = files_list.get(self._merged_type.text().lower(), 
+                                   filtered_by_name, 
+                                   filtered_by_extension, 
+                                   filtered_by_date)
+        print(self._merged_type.text().lower())
+        print(filtered_by_name)
+        print(all_files)
         
-        file = actions.Files(filtered_list, self._label_source_dir.text(), self._label_destination_dir.text())
-        file.copy()
+        #file = actions.Files(self._merged_type.text(), )
+        #file.copy()
+        
         
      
     def _mainWindow(self):
