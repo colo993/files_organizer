@@ -109,10 +109,10 @@ class FilesOrganizerWindow(QMainWindow):
         action_group = QButtonGroup(widget)
         radiobutton_copy = QRadioButton("Copy")
         action_group.addButton(radiobutton_copy, 2)
-        radiobutton_copy.toggled.connect(self._copy_or_move_action)
+        radiobutton_copy.toggled.connect(self._get_action_type)
         radiobutton_move = QRadioButton("Move")
         action_group.addButton(radiobutton_move, 3)
-        radiobutton_move.toggled.connect(self._copy_or_move_action)
+        radiobutton_move.toggled.connect(self._get_action_type)
         
         summary_label = QLabel()
         summary_label.setText("Files to be copied or moved:")
@@ -151,7 +151,6 @@ class FilesOrganizerWindow(QMainWindow):
         main_layout.setContentsMargins(10, 10, 20, 30)
         widget.setLayout(main_layout)
         self.setCentralWidget(widget)
-        
     def _get_source_directory(self):
         """Obtain source directory path and print it out on the screen."""
         source_directory = QFileDialog.getExistingDirectory(
@@ -160,7 +159,6 @@ class FilesOrganizerWindow(QMainWindow):
                                             self._label_source_dir.text())
         if source_directory:
             self._label_source_dir.setText(source_directory)
-    
     def _get_destination_directory(self):
         """Obtain destination directory path and print it out on the screen."""
         destination_directory = QFileDialog.getExistingDirectory(
@@ -230,7 +228,7 @@ class FilesOrganizerWindow(QMainWindow):
         """Obtain value of radio buttons Union or Intersection."""
         self._merged_type = self.sender()
         
-    def _copy_or_move_action(self):
+    def _get_action_type(self):
         """Obtain value of radio buttons Copy or Move."""
         self._action_type = self.sender()
     
@@ -243,46 +241,57 @@ class FilesOrganizerWindow(QMainWindow):
     
     def _start_process(self):
         """Copy or move selected files after clicking the button."""
-        files_list = filters.FilesList(self._label_source_dir.text())
+        try:
+            files_list = filters.FilesList(self._label_source_dir.text())
 
-        if self._filter_by_name_checkbox.isChecked():
-            filtered_by_name = files_list.filter_by_name(
-                                            self._filter_by_name_widget.text()) 
-        else:
-            filtered_by_name = None
-            
-        if self._filter_by_extension_checkbox.isChecked():
-            filtered_by_extension = files_list.filter_by_extension(
-                                self._filter_by_extension_widget.currentText())
-        else:
-            filtered_by_extension = None
-            
-        if self._filter_by_date_checkbox.isChecked():
-            from_date = str(self._filter_from_date_widget.dateTime().
-                                        toPyDateTime().replace(microsecond=0))
-            to_date = str(self._filter_to_date_widget.dateTime().
-                                        toPyDateTime().replace(microsecond=0))
-            
-            from_date_converted = datetime.strptime(from_date, 
-                                                    "%Y-%m-%d %H:%M:%S")
-            to_date_converted = datetime.strptime(to_date, 
-                                                    "%Y-%m-%d %H:%M:%S")
- 
-            filtered_by_date = files_list.filter_by_date_creation(
-                                        from_date_converted, to_date_converted)
-        else:
-            filtered_by_date = None
+            if self._filter_by_name_checkbox.isChecked():
+                filtered_by_name = files_list.filter_by_name(
+                                                self._filter_by_name_widget.text()) 
+            else:
+                filtered_by_name = None
+                
+            if self._filter_by_extension_checkbox.isChecked():
+                filtered_by_extension = files_list.filter_by_extension(
+                                    self._filter_by_extension_widget.currentText())
+            else:
+                filtered_by_extension = None
+                
+            if self._filter_by_date_checkbox.isChecked():
+                from_date = str(self._filter_from_date_widget.dateTime().
+                                            toPyDateTime().replace(microsecond=0))
+                to_date = str(self._filter_to_date_widget.dateTime().
+                                            toPyDateTime().replace(microsecond=0))
+                
+                from_date_converted = datetime.strptime(from_date, 
+                                                        "%Y-%m-%d %H:%M:%S")
+                to_date_converted = datetime.strptime(to_date, 
+                                                        "%Y-%m-%d %H:%M:%S")
+    
+                filtered_by_date = files_list.filter_by_date_creation(
+                                            from_date_converted, to_date_converted)
+            else:
+                filtered_by_date = None
 
-        all_files = files_list.get(self._merged_type.text().lower(), 
-                                   filtered_by_name, 
-                                   filtered_by_extension, 
-                                   filtered_by_date)
-        print(self._merged_type.text().lower())
-        print(filtered_by_name)
-        print(all_files)
+            all_files = files_list.get(self._merged_type.text().lower(), 
+                                    filtered_by_name, 
+                                    filtered_by_extension, 
+                                    filtered_by_date)
+            
+            file = actions.Files(all_files, 
+                                 self._label_source_dir.text(),
+                                 self._label_destination_dir.text())
+    
+            if self._action_type.text() == 'Copy':
+                file.copy()
+            elif self._action_type.text() == 'Move':
+                file.move()
+
+            print(f'Merge type: {self._merged_type.text().lower()}')
+            print(f'list of files: {all_files}')
+        except AttributeError:
+            print('AttributeError')
         
-        #file = actions.Files(self._merged_type.text(), )
-        #file.copy()
+        
         
     def _restartMainWindow(self):
         """Reset FilesOrganizer main window to initial stage."""
